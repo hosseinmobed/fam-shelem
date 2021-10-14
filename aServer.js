@@ -28,7 +28,7 @@ io.on("connection", socket => {
   });
 });
 
-const port = 3005;
+const port = process.env.PORT;
 server.listen(port, () => {
   console.log("listening on *: " + port);
 });
