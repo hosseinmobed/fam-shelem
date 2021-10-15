@@ -1,7 +1,7 @@
-const os = require('os');
 const fs = require("fs");
 const http = require("http");
 
+const { get_ip } = require('ipware')();
 const express = require("express");
 const app = express();
 const server = http.createServer(app);
@@ -12,11 +12,7 @@ const file = fs.readFileSync("./fourOfour.html");
 
 app.use(express.static(__dirname + "/aPublic"));
 
-app.get("/myIP", (req, res) => res.send(req.socket.remoteAddress));
-
-const networkInterfaces = os.networkInterfaces();
-
-app.get("/srvIP", (req, res) => res.send(JSON.stringify(networkInterfaces)));
+app.get("/myIP", (req, res) => res.send(JSON.stringify(get_ip(req))));
 
 app.get("*", (req, res) => {
   res.send(file.toString());
