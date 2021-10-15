@@ -11,6 +11,8 @@ const file = fs.readFileSync("./fourOfour.html");
 
 app.use(express.static(__dirname + "/aPublic"));
 
+app.get("/myIP", (req, res) => res.send(req.ip));
+
 app.get("*", (req, res) => {
   res.send(file.toString());
 });
