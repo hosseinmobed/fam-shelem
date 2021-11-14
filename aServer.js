@@ -1,41 +1,53 @@
-const os = require('os');
 const fs = require("fs");
 const http = require("http");
 
-const { get_ip } = require('ipware')();
 const express = require("express");
 const app = express();
 const server = http.createServer(app);
-const { Server } = require("socket.io");
+const Server = require("socket.io");
 const io = new Server(server);
 
 const file = fs.readFileSync("./fourOfour.html");
 
 app.use(express.static(__dirname + "/aPublic"));
 
-app.get("/myIP", (req, res) => res.send(JSON.stringify(get_ip(req))));
-
-const networkInterfaces = os.networkInterfaces();
-app.get("/srvIP", (req, res) => res.send(JSON.stringify(networkInterfaces)));
-
 app.get("*", (req, res) => {
   res.send(file.toString());
 });
 
-const uts = {};
-const itu = {};
+let uts = {};
+let itu = {};
 
 io.on("connection", socket => {
   socket.on("reg", userName => {
+    socket.emit('regRes', Object.values(itu));
     uts[userName] = socket;
     itu[socket.id] = userName;
+    const demo = Object.values(itu);
+    for (const user in uts) {
+      if (user === userName) continue;
+      uts[user].emit("onlines", demo.filter(curUser => curUser !== user));
+    }
   });
-  socket.on("send", ({ to, msg }) => {
-    uts[to].emit("what", itu[socket.id] + ": " + msg);
+  socket.on("send", ({ to, text }) => {
+    uts[to].emit("what", { sender: itu[socket.id], text });
+  });
+  socket.on("disconnect", () => {
+    const senderID = socket.id;
+    const senderUserName = itu[senderID];
+    const demoITU = {};
+    const demoUTS = {};
+    const demoUserNames = Object.values(itu);
+    for (const id in itu) {
+      if (id === senderID) continue;
+      const uu = itu[id];
+      uts[uu].emit('onlines', demoUserNames.filter(curUser => curUser !== senderUserName && curUser !== uu))
+      demoITU[id] = uu;
+      demoUTS[uu] = uts[uu];
+    }
+    itu = demoITU;
+    uts = demoUTS;
   });
 });
 
-const port = process.env.PORT;
-server.listen(port, () => {
-  console.log("listening on *: " + port);
-});
+server.listen(process.env.PORT);
