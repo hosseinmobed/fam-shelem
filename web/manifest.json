@@ -1,12 +1,12 @@
 {
-    "name": "first_flutter",
-    "short_name": "first_flutter",
+    "name": "Heu Chat",
+    "short_name": "Heu Chat",
     "start_url": ".",
-    "display": "standalone",
+    "display": "fullscreen",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "description": "A new Flutter project for chat.",
+    "orientation": "portrait",
     "prefer_related_applications": false,
     "icons": [
         {
