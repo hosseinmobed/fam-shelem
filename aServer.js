@@ -9,7 +9,7 @@ const io = new Server(server);
 
 const file = fs.readFileSync("./fourOfour.html");
 
-app.use(express.static(__dirname + "/aPublic"));
+app.use(express.static(__dirname + "/web"));
 
 app.get("*", (req, res) => {
   res.send(file.toString());
