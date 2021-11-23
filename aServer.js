@@ -1,6 +1,8 @@
 const fs = require("fs");
 const http = require("http");
 
+console.log("123");
+
 const express = require("express");
 const app = express();
 const server = http.createServer(app);
